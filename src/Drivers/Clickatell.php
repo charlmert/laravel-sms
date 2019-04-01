@@ -73,6 +73,8 @@ class Clickatell extends Driver
             //var_dump($e->getMessage());
             $response['response']['exception'][] = $e->getMessage();
         }
+
+        return $response;
     }
 
     public function searchNumber(PhoneSearchParams $search)
