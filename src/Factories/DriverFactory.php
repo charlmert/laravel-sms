@@ -6,6 +6,7 @@ use Exception;
 use LeadThread\Sms\Drivers\Plivo;
 use LeadThread\Sms\Drivers\Twilio;
 use LeadThread\Sms\Drivers\Bandwidth;
+use LeadThread\Sms\Drivers\Clickatell;
 
 class DriverFactory
 {
@@ -53,5 +54,15 @@ class DriverFactory
     protected function bandwidth(array $config)
     {
         return new Bandwidth($config['secret'], $config['token'], $config['user_id']);
+    }
+
+    /**
+     * Clickatell
+     * @param  array $config An array of config values for setting up the driver
+     * @return \LeadThread\Sms\Drivers\Clickatell
+     */
+    protected function clickatell(array $config)
+    {
+        return new Clickatell($config['token']);
     }
 }
