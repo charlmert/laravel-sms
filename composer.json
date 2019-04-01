@@ -1,6 +1,6 @@
 {
-    "name": "leadthread/laravel-sms",
-    "description": "",
+    "name": "charlmert/laravel-sms",
+    "description": "Forked from https://github.com/leadthread/laravel-sms",
     "keywords": [
         "laravel",
         "plivo",
@@ -9,12 +9,16 @@
         "tylercd100",
         "leadthread"
     ],
-    "homepage": "https://github.com/leadthread/laravel-sms",
-    "license": "MIT",  
+    "homepage": "https://github.com/charlmert/laravel-sms",
+    "license": "MIT",
     "authors": [
         {
             "name": "Tyler Arbon",
             "email": "tylercd100@gmail.com"
+        },
+        {
+            "name": "Charl Mert",
+            "email": "charl.mert@gmail.com"
         }
     ],
     "autoload":{
@@ -27,7 +31,7 @@
             "LeadThread\\Sms\\Tests\\": "tests/"
         }
     },
-    "minimum-stability": "stable",  
+    "minimum-stability": "stable",
     "require": {
         "illuminate/bus": "^5.2",
         "illuminate/contracts": "^5.2",
@@ -45,6 +49,7 @@
     "suggest": {
         "plivo/plivo-php": "^1.1",
         "twilio/sdk": "^5.1",
-        "bandwidth/catapult": "^0.8.2"
+        "bandwidth/catapult": "^0.8.2",
+        "clickatell/clickatell-v2": "dev-master"
     }
 }
