@@ -36,4 +36,11 @@ return [
         'fallback_url' => env('BANDWIDTH_FALLBACK_URL', null),
         'application_id' => env('BANDWIDTH_APPLICATION_ID', null),
     ],
+
+    /**
+     * Clickatell settings
+     */
+    'clickatell' => [
+        'token' => env('CLICKATELL_AUTH_TOKEN'),
+    ],
 ];
