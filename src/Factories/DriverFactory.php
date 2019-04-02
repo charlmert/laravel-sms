@@ -63,6 +63,6 @@ class DriverFactory
      */
     protected function clickatell(array $config)
     {
-        return new Clickatell($config['token']);
+        return new Clickatell($config['token'], $config['type'], $config['version']);
     }
 }

@@ -39,8 +39,13 @@ return [
 
     /**
      * Clickatell settings
+     *
+     * type can be 'REST'
+     * version can be 1, 2
      */
     'clickatell' => [
         'token' => env('CLICKATELL_AUTH_TOKEN'),
+        'type' => env('CLICKATELL_API_TYPE', 'REST'),
+        'version' => env('CLICKATELL_API_VERSION', '1'),
     ],
 ];

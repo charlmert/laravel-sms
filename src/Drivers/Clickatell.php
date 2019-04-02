@@ -6,36 +6,53 @@ use LeadThread\Sms\Drivers\Driver;
 use LeadThread\Sms\Interfaces\PhoneSearchParams;
 use LeadThread\Sms\Responses\Clickatell as ClickatellResponse;
 
-use \Clickatell\Rest;
+use \Clickatell\Api;
 use \Clickatell\ClickatellException;
 
 class Clickatell extends Driver
 {
+    /**
+     * Stores the clickatell api rest object used to handle sms requests.
+     *
+     * @var \Clickatell\Api
+     */
+    private $handle;
 
     /**
      * Stores the clickatell api rest object used to handle sms requests.
      *
      * @var \Clickatell\Rest
      */
-    private $handle;
+    private $type;
 
-    public function __construct($auth_token)
+    /**
+     * Stores the clickatell api rest object used to handle sms requests.
+     *
+     * @var \Clickatell\Rest
+     */
+    private $version;
+
+    public function __construct($auth_token, $type = 'REST', $version = '1')
     {
-        $this->handle = new \Clickatell\Rest($auth_token);
+        $this->handle = \Clickatell\Api::load($auth_token, $type, $version);
     }
 
     public function send($msg, $to, $from = null, $callback = null)
     {
-        if (!empty($callback)) {
-            throw new \Exception("Callback URLs are not implemented by this driver", 1);
-        }
-
         $params = [
-            'to'  => $to,
-            'content' => $msg,
+            'to'  => [$to],
+            'text' => $msg,
         ];
 
-        return new ClickatellResponse($this->send_message($params));
+        if (!empty($from)) {
+            $params['from'] = $from;
+        }
+
+        if (!empty($callback)) {
+            $params['callback'] = $callback;
+        }
+
+        return new ClickatellResponse($this->sendMessage($params));
     }
 
     /**
@@ -45,25 +62,21 @@ class Clickatell extends Driver
      *
      * @return array
      */
-    private function send_message(array $params) : array
+    private function sendMessage(array $params) : array
     {
         // Full list of support parameters can be found at https://www.clickatell.com/developers/api-documentation/rest-api-request-parameters/
 
         $response = ['response'];
-
         try {
             $result = $this->handle->sendMessage($params);
 
-            foreach ($result['messages'] as $message) {
+            foreach ($result as $message) {
                 $response['response'][] = $message;
 
                 /*
-                [
-                    'apiMsgId'  => null|string,
-                    'accepted'  => boolean,
-                    'to'        => string,
-                    'error'     => null|string
-                ]
+                    [accepted] => 1
+                    [to] => 27620121816
+                    [apiMessageId] => a12f6dcfac3257206bfdede0a5217daf
                 */
             }
 
@@ -73,6 +86,8 @@ class Clickatell extends Driver
             //var_dump($e->getMessage());
             $response['response']['exception'][] = $e->getMessage();
         }
+
+        return $response;
     }
 
     public function searchNumber(PhoneSearchParams $search)
@@ -88,5 +103,15 @@ class Clickatell extends Driver
     public function sellNumber($phone)
     {
         throw new \Exception("The sellNumber feature is not supported by this driver");
+    }
+
+    /**
+     * Listens for messages.
+     *
+     * @param array $params The parameters sent by the provider.
+     */
+    public function listen($params)
+    {
+
     }
 }

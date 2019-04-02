@@ -114,4 +114,8 @@ class Sms
     {
         return $this->driver->sellNumber($number);
     }
+
+    public function listen($number) {
+        return $this->driver->listen($number);
+    }
 }
