@@ -6,22 +6,35 @@ use LeadThread\Sms\Drivers\Driver;
 use LeadThread\Sms\Interfaces\PhoneSearchParams;
 use LeadThread\Sms\Responses\Clickatell as ClickatellResponse;
 
-use \Clickatell\Rest;
+use \Clickatell\Api;
 use \Clickatell\ClickatellException;
 
 class Clickatell extends Driver
 {
+    /**
+     * Stores the clickatell api rest object used to handle sms requests.
+     *
+     * @var \Clickatell\Api
+     */
+    private $handle;
 
     /**
      * Stores the clickatell api rest object used to handle sms requests.
      *
      * @var \Clickatell\Rest
      */
-    private $handle;
+    private $type;
 
-    public function __construct($auth_token)
+    /**
+     * Stores the clickatell api rest object used to handle sms requests.
+     *
+     * @var \Clickatell\Rest
+     */
+    private $version;
+
+    public function __construct($auth_token, $type = 'REST', $version = '1')
     {
-        $this->handle = \Clickatell\Rest::load($auth_token, 'https://api.clickatell.com/rest');
+        $this->handle = \Clickatell\Api::load($auth_token, $type, $version);
     }
 
     public function send($msg, $to, $from = null, $callback = null)
@@ -90,5 +103,15 @@ class Clickatell extends Driver
     public function sellNumber($phone)
     {
         throw new \Exception("The sellNumber feature is not supported by this driver");
+    }
+
+    /**
+     * Listens for messages.
+     *
+     * @param array $params The parameters sent by the provider.
+     */
+    public function listen($params)
+    {
+
     }
 }
