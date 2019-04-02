@@ -21,21 +21,25 @@ class Clickatell extends Driver
 
     public function __construct($auth_token)
     {
-        $this->handle = new \Clickatell\Rest($auth_token);
+        $this->handle = \Clickatell\Rest::load($auth_token, 'https://api.clickatell.com/rest');
     }
 
     public function send($msg, $to, $from = null, $callback = null)
     {
-        if (!empty($callback)) {
-            throw new \Exception("Callback URLs are not implemented by this driver", 1);
-        }
-
         $params = [
-            'to'  => $to,
-            'content' => $msg,
+            'to'  => [$to],
+            'text' => $msg,
         ];
 
-        return new ClickatellResponse($this->send_message($params));
+        if (!empty($from)) {
+            $params['from'] = $from;
+        }
+
+        if (!empty($callback)) {
+            $params['callback'] = $callback;
+        }
+
+        return new ClickatellResponse($this->sendMessage($params));
     }
 
     /**
@@ -45,25 +49,21 @@ class Clickatell extends Driver
      *
      * @return array
      */
-    private function send_message(array $params) : array
+    private function sendMessage(array $params) : array
     {
         // Full list of support parameters can be found at https://www.clickatell.com/developers/api-documentation/rest-api-request-parameters/
 
         $response = ['response'];
-
         try {
             $result = $this->handle->sendMessage($params);
 
-            foreach ($result['messages'] as $message) {
+            foreach ($result as $message) {
                 $response['response'][] = $message;
 
                 /*
-                [
-                    'apiMsgId'  => null|string,
-                    'accepted'  => boolean,
-                    'to'        => string,
-                    'error'     => null|string
-                ]
+                    [accepted] => 1
+                    [to] => 27620121816
+                    [apiMessageId] => a12f6dcfac3257206bfdede0a5217daf
                 */
             }
 

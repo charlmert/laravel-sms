@@ -8,21 +8,17 @@ class Clickatell extends Response
 {
     public function applyResponse($response)
     {
+        $this->error = [];
         if (isset($response['response'])) {
             if (isset($response['response']['exception'])) {
-                $this->error = count($response['response']['exception']);
+                $this->error[] = $response['response']['exception'];
             }
         }
 
-        $errors = 0;
         foreach ($response['response'] as $resp) {
             if (isset($resp['error'])) {
-                $errors++;
+                $this->error[] = $resp['error'];
             }
-        }
-
-        if ($errors > 0) {
-            $this->error = $errors;
         }
     }
 
